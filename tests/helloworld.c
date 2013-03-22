@@ -60,9 +60,9 @@ int main(int argc,
 {
     int iXmlErr = xml_parse(s_szXml,
         0,
-        on_opentag, 		
-        on_closetag,		
-        on_attribute, 	
+        on_opentag,         
+        on_closetag,        
+        on_attribute,     
         on_endattribute, 
         on_text);
     return iXmlErr;
