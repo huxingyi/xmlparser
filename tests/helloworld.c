@@ -1,10 +1,3 @@
-xmlparser
-=========
-
-a tiny xml parser
-
-usage:
-
 #include <xmlparser.h>
 #include <stdlib.h>
 #include <stdio.h>
