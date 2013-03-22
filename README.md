@@ -5,6 +5,7 @@ a tiny xml parser
 
 usage:
 
+```c
 #include <xmlparser.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -74,4 +75,4 @@ int main(int argc,
         on_text);
     return iXmlErr;
 }
-
+```
