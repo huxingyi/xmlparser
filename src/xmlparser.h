@@ -28,14 +28,14 @@ typedef enum _tagXMLERR
 #define XML_CDATA_CLOSE_TAG        "]]>"
 #define XML_TEXT_CLOSE_TAG        "</"
 
-#define xml_isname(_c) ( isalnum(_c) )
+#define xml_isname(_c) ( (_c) > 32 && (_c) < 122 && isalnum(_c) )
 
 /* Callback returns 0 indicates continue to explain, returns others indicates quit. */
 typedef int (*xmlonopentag)(void* param, 
     int depth, 
     char* name);
     
-/* When matched <tagname/>£¬the name's value is empty. */
+/* When matched <tagname/>ï¿½ï¿½the name's value is empty. */
 typedef int (*xmlonclosetag)(void* param, 
     int depth, 
     char* name);
