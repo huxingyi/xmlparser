@@ -352,6 +352,9 @@ int xml_parse(char* xml,
             }
             break;
         case ' ':
+        case '\t':
+        case '\r':
+        case '\n':
             {
                 if (XML_ATTRIBUTE_NAME == status)
                 {
