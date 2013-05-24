@@ -55,7 +55,7 @@ int on_text(void* param,
     return 0;
 }
 
-static char s_szXml[] = {
+static char s_xml[] = {
     "<xml>"
     "    <tag name=\"helloworld\">"
     "        HELLO WORLD!!!"
@@ -66,13 +66,13 @@ static char s_szXml[] = {
 int main(int argc,
     char *argv[])
 {
-    int iXmlErr = xml_parse(s_szXml,
+    int parseerr = xml_parse(s_xml,
         0,
         on_opentag, 		
         on_closetag,		
         on_attribute, 	
         on_endattribute, 
         on_text);
-    return iXmlErr;
+    return parseerr;
 }
 ```
