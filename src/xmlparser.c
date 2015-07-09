@@ -1,3 +1,18 @@
+/* Copyright (c) 2010, huxingyi@msn.com
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
 #include "xmlparser.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -6,13 +21,13 @@
 #pragma warning(disable:4013)
 #endif
 
-int xml_parse(char* xml,                
-    void* param,                 
-    xmlonopentag on_opentag,         
-    xmlonclosetag on_closetag,        
-    xmlonattribute on_attribute,     
-    xmlonendattribute on_endattribute, 
-    xmlontext on_text)            
+int xml_parse(char* xml,
+    void* param,
+    xmlonopentag on_opentag,
+    xmlonclosetag on_closetag,
+    xmlonattribute on_attribute,
+    xmlonendattribute on_endattribute,
+    xmlontext on_text)
 {
     int status = XML_TEXT;
     char tmp = 0;
@@ -31,15 +46,15 @@ int xml_parse(char* xml,
     int depth = 0;
     char* p = xml;
     int moved = 0;
-    
+
     //fapdebug("xml_parse.\n");
-    
+
     if (0 == p)
     {
         return XMLERR_PARAM;
     }
-    
-    while (0 != p && 
+
+    while (0 != p &&
         '\0' != (*p))
     {
         //printf("%c ", *p);
@@ -52,8 +67,8 @@ int xml_parse(char* xml,
             {
                 if (XML_TEXT == status)
                 {
-                    if (0 == strncmp(p, 
-                        XML_CDATA_OPEN_TAG, 
+                    if (0 == strncmp(p,
+                        XML_CDATA_OPEN_TAG,
                         strlen(XML_CDATA_OPEN_TAG))) // <![CDATA[
                     {
                         status = XML_CDATA;
@@ -61,16 +76,16 @@ int xml_parse(char* xml,
                         moved = 1;
                         text_start = p;
                     }
-                    else if (0 == strncmp(p, 
-                        XML_COMMENT_OPEN_TAG, 
+                    else if (0 == strncmp(p,
+                        XML_COMMENT_OPEN_TAG,
                         strlen(XML_COMMENT_OPEN_TAG))) // <!--
                     {
                         status = XML_COMMENT;
                         p += strlen(XML_COMMENT_OPEN_TAG);
                         moved = 1;
                     }
-                    else if (0 == strncmp(p, 
-                        XML_TEXT_CLOSE_TAG, 
+                    else if (0 == strncmp(p,
+                        XML_TEXT_CLOSE_TAG,
                         strlen(XML_TEXT_CLOSE_TAG))) // </foo
                     {
                         status = XML_CLOSETAG_NAME;
@@ -79,8 +94,8 @@ int xml_parse(char* xml,
                         {
                             tmp = *text_stop;
                             *text_stop = '\0';
-                            callback_return = on_text(param, 
-                                depth, 
+                            callback_return = on_text(param,
+                                depth,
                                 text_start);
                             *text_stop = tmp;
                             if (0 != callback_return)
@@ -94,8 +109,8 @@ int xml_parse(char* xml,
                         moved = 1;
                         closetag_start = p;
                     }
-                    else if (0 == strncmp(p, 
-                        XML_HEAD_OPEN_TAG, 
+                    else if (0 == strncmp(p,
+                        XML_HEAD_OPEN_TAG,
                         strlen(XML_HEAD_OPEN_TAG))) // <?
                     {
                         status = XML_OPENTAG_NAME;
@@ -118,7 +133,7 @@ int xml_parse(char* xml,
                 {
                     if (0 != (p+1) && '>' == (*(p+1)))
                     {
-                        callback_return = on_endattribute(param, 
+                        callback_return = on_endattribute(param,
                             depth);
                         if (0 != callback_return)
                         {
@@ -127,8 +142,8 @@ int xml_parse(char* xml,
                         status = XML_TEXT;
                         p += 2;
                         moved = 1;
-                        callback_return = on_closetag(param, 
-                            depth, 
+                        callback_return = on_closetag(param,
+                            depth,
                             "");
                         if (0 != callback_return)
                         {
@@ -145,7 +160,7 @@ int xml_parse(char* xml,
                         opentag_stop = p;
                         p += 2;
                         moved = 1;
-                        if (0 == opentag_start || 
+                        if (0 == opentag_start ||
                             0 == opentag_stop)
                         {
                             return XMLERR_OPENTAG;
@@ -153,8 +168,8 @@ int xml_parse(char* xml,
                         ++depth;
                         tmp = *opentag_stop;
                         *opentag_stop = '\0';
-                        callback_return = on_opentag(param, 
-                            depth, 
+                        callback_return = on_opentag(param,
+                            depth,
                             opentag_start);
                         *opentag_stop = tmp;
                         if (0 != callback_return)
@@ -163,14 +178,14 @@ int xml_parse(char* xml,
                         }
                         opentag_start = 0;
                         opentag_stop = 0;
-                        callback_return = on_endattribute(param, 
+                        callback_return = on_endattribute(param,
                             depth);
                         if (0 != callback_return)
                         {
                             return callback_return;
                         }
-                        callback_return = on_closetag(param, 
-                            depth, 
+                        callback_return = on_closetag(param,
+                            depth,
                             "");
                         if (0 != callback_return)
                         {
@@ -189,7 +204,7 @@ int xml_parse(char* xml,
             {
                 if (XML_ATTRIBUTE_PRE == status)
                 {
-                    callback_return = on_endattribute(param, 
+                    callback_return = on_endattribute(param,
                         depth);
                     if (0 != callback_return)
                     {
@@ -202,15 +217,15 @@ int xml_parse(char* xml,
                 {
                     status = XML_TEXT;
                     closetag_stop = p;
-                    if (0 == closetag_start || 
+                    if (0 == closetag_start ||
                         0 == closetag_stop)
                     {
                         return XMLERR_CLOSETAG;
                     }
                     tmp = *closetag_stop;
                     *closetag_stop = '\0';
-                    callback_return = on_closetag(param, 
-                        depth, 
+                    callback_return = on_closetag(param,
+                        depth,
                         closetag_start);
                     *closetag_stop = tmp;
                     if (0 != callback_return)
@@ -226,7 +241,7 @@ int xml_parse(char* xml,
                     status = XML_TEXT;
                     text_start = p + 1;
                     opentag_stop = p;
-                    if (0 == opentag_start || 
+                    if (0 == opentag_start ||
                         0 == opentag_stop)
                     {
                         return XMLERR_OPENTAG;
@@ -234,8 +249,8 @@ int xml_parse(char* xml,
                     ++depth;
                     tmp = *opentag_stop;
                     *opentag_stop = '\0';
-                    callback_return = on_opentag(param, 
-                        depth, 
+                    callback_return = on_opentag(param,
+                        depth,
                         opentag_start);
                     *opentag_stop = tmp;
                     if (0 != callback_return)
@@ -244,7 +259,7 @@ int xml_parse(char* xml,
                     }
                     opentag_start = 0;
                     opentag_stop = 0;
-                    callback_return = on_endattribute(param, 
+                    callback_return = on_endattribute(param,
                         depth);
                     if (0 != callback_return)
                     {
@@ -275,9 +290,9 @@ int xml_parse(char* xml,
                     tmp2 = *attr_value_stop;
                     *attr_name_stop = '\0';
                     *attr_value_stop = '\0';
-                    callback_return = on_attribute(param, 
-                        depth, 
-                        attr_name_start, 
+                    callback_return = on_attribute(param,
+                        depth,
+                        attr_name_start,
                         attr_value_start);
                     *attr_name_stop = tmp;
                     *attr_value_stop = tmp2;
@@ -292,12 +307,12 @@ int xml_parse(char* xml,
                 }
             }
             break;
-        case '-': // --> 
+        case '-': // -->
             {
                 if (XML_COMMENT == status)
                 {
-                    if (0 == strncmp(p, 
-                        XML_COMMENT_CLOSE_TAG, 
+                    if (0 == strncmp(p,
+                        XML_COMMENT_CLOSE_TAG,
                         strlen(XML_COMMENT_CLOSE_TAG)))
                     {
                         status = XML_TEXT;
@@ -311,19 +326,19 @@ int xml_parse(char* xml,
             {
                 if (XML_CDATA == status)
                 {
-                    if (0 == strncmp(p, 
-                        XML_CDATA_CLOSE_TAG, 
+                    if (0 == strncmp(p,
+                        XML_CDATA_CLOSE_TAG,
                         strlen(XML_CDATA_CLOSE_TAG)))
                     {
                         status = XML_TEXT;
                         text_stop = p;
-                        if (0 != text_start && 
+                        if (0 != text_start &&
                             0 != text_stop)
                         {
                             tmp = *text_stop;
                             *text_stop = '\0';
-                            callback_return = on_text(param, 
-                                depth, 
+                            callback_return = on_text(param,
+                                depth,
                                 text_start);
                             *text_stop = tmp;
                             if (0 != callback_return)
@@ -367,7 +382,7 @@ int xml_parse(char* xml,
                 {
                     status = XML_ATTRIBUTE_PRE;
                     opentag_stop = p;
-                    if (0 == opentag_start || 
+                    if (0 == opentag_start ||
                         0 == opentag_stop)
                     {
                         return XMLERR_OPENTAG;
@@ -375,8 +390,8 @@ int xml_parse(char* xml,
                     ++depth;
                     tmp = *opentag_stop;
                     *opentag_stop = '\0';
-                    callback_return = on_opentag(param, 
-                        depth, 
+                    callback_return = on_opentag(param,
+                        depth,
                         opentag_start);
                     *opentag_stop = tmp;
                     if (0 != callback_return)
@@ -391,7 +406,7 @@ int xml_parse(char* xml,
             break;
         default:
             {
-                
+
                 if (XML_ATTRIBUTE_PRE == status)
                 {
                     if (xml_isname(*p))
