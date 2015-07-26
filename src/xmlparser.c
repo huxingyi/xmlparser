@@ -16,6 +16,8 @@
 #include "xmlparser.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
 #ifdef _WIN32
 #pragma warning(disable:4013)
